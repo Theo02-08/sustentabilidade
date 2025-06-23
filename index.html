@@ -1,0 +1,2320 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoOffice | Sistema de Gestão</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Estilos gerais */
+        :root {
+            --primary: #2e7d32;
+            --primary-dark: #1b5e20;
+            --primary-light: #4caf50;
+            --secondary: #0288D1;
+            --dark: #263238;
+            --light: #f5f5f5;
+            --warning: #F57C00;
+            --danger: #D32F2F;
+            --success: #388E3C;
+            --info: #1976D2;
+            --gray: #757575;
+            --text: #333333;
+            --text-light: #757575;
+            --background: #f5f7fa;
+            --card: #ffffff;
+            --error: #d32f2f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Estilos da página de login */
+        .login-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-header {
+            text-align: center;
+            margin: 40px 0 30px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .logo i {
+            color: var(--primary);
+            font-size: 2.2rem;
+        }
+
+        .login-title {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1.8rem;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            margin-bottom: 25px;
+        }
+
+        .card-title {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: #f5f5f5;
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background-color: #e0e0e0;
+        }
+
+        .status {
+            padding: 14px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .status.success {
+            background-color: rgba(56, 142, 60, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(56, 142, 60, 0.3);
+        }
+
+        .status.error {
+            background-color: rgba(211, 47, 47, 0.1);
+            color: var(--error);
+            border: 1px solid rgba(211, 47, 47, 0.3);
+        }
+
+        .status.temporary {
+            background-color: rgba(56, 142, 60, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(56, 142, 60, 0.3);
+            animation: fadeOut 5s forwards;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { opacity: 0; height: 0; padding: 0; margin: 0; border: none; }
+        }
+
+        .admin-panel {
+            display: none;
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .toggle-admin {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        /* Estilos do dashboard */
+        .dashboard-container {
+            display: none;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .main-content {
+            display: grid;
+            gap: 25px;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            height: fit-content;
+        }
+
+        .consumption-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 10px 0;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .consumption-trend {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+
+        .trend-up {
+            color: var(--danger);
+        }
+
+        .trend-down {
+            color: var(--success);
+        }
+
+        .chart-container {
+            height: 300px;
+            margin-top: 15px;
+        }
+
+        .sectors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .sector-card {
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.3s;
+        }
+
+        .sector-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .sector-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .sector-name {
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .sensor-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--success);
+            position: relative;
+        }
+
+        .sensor-status::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: inherit;
+            opacity: 0.2;
+            top: -4px;
+            left: -4px;
+        }
+
+        .sensor-status.inactive {
+            background-color: var(--danger);
+        }
+
+        .sensor-status.warning {
+            background-color: var(--warning);
+        }
+
+        .sector-meta {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-bottom: 15px;
+        }
+
+        .device-list {
+            margin-top: 15px;
+        }
+
+        .device-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .device-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .device-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #f0f7ff;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary);
+        }
+
+        .automation-card {
+            margin-bottom: 20px;
+        }
+
+        .automation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .automation-title {
+            font-weight: 500;
+        }
+
+        .automation-description {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+
+        .alert-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .alert-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .alert-icon.warning {
+            background-color: rgba(245, 124, 0, 0.1);
+            color: var(--warning);
+        }
+
+        .alert-icon.success {
+            background-color: rgba(56, 142, 60, 0.1);
+            color: var(--success);
+        }
+
+        .alert-icon.danger {
+            background-color: rgba(211, 47, 47, 0.1);
+            color: var(--danger);
+        }
+
+        .alert-content {
+            flex-grow: 1;
+        }
+
+        .alert-title {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+
+        .alert-message {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .alert-time {
+            font-size: 0.8rem;
+            color: #bdbdbd;
+            white-space: nowrap;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            animation: modalFadeIn 0.3s;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--primary);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .carbon-badge {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--primary-dark);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            z-index: 100;
+            cursor: pointer;
+        }
+
+        .carbon-icon {
+            font-size: 1.5rem;
+        }
+
+        .carbon-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .carbon-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .carbon-value {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .tab-container {
+            margin-bottom: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 15px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .energy-saving {
+            background-color: #E8F5E9;
+            border-left: 4px solid var(--success);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 20px;
+        }
+
+        .energy-saving h3 {
+            color: var(--success);
+            margin-bottom: 10px;
+        }
+
+        .energy-saving p {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .ai-recommendation {
+            background-color: #E3F2FD;
+            border-left: 4px solid var(--secondary);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 20px;
+        }
+
+        .ai-recommendation h3 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-recommendation p {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .ai-assistant {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+
+        .ai-assistant:hover {
+            transform: scale(1.1);
+        }
+
+        .ai-chat {
+            position: fixed;
+            bottom: 100px;
+            left: 30px;
+            width: 350px;
+            max-height: 500px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+            display: none;
+            flex-direction: column;
+            z-index: 101;
+        }
+
+        .ai-chat.active {
+            display: flex;
+        }
+
+        .chat-header {
+            padding: 15px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-title {
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .close-chat {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            max-height: 400px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message.ai {
+            align-items: flex-start;
+        }
+
+        .message.user {
+            align-items: flex-end;
+        }
+
+        .message-content {
+            padding: 10px 15px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .message.ai .message-content {
+            background-color: #f0f0f0;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.user .message-content {
+            background-color: var(--primary);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+
+        .chat-input input {
+            flex-grow: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+        }
+
+        .send-button {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .prediction-card {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+        }
+
+        .prediction-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .prediction-title {
+            font-weight: 500;
+            color: var(--primary);
+        }
+
+        .prediction-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 5px 0;
+        }
+
+        .prediction-description {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .anomaly-detected {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(211, 47, 47, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); }
+        }
+
+        .security-status {
+            display: grid;
+            gap: 12px;
+            padding: 15px 0;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+        }
+
+        .status-good {
+            color: var(--success);
+        }
+
+        .status-warning {
+            color: var(--warning);
+        }
+
+        .status-danger {
+            color: var(--danger);
+        }
+
+        .certification-badge {
+            display: inline-block;
+            background-color: #E8F5E9;
+            color: var(--success);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-top: 10px;
+        }
+
+        .backup-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+
+        .calibration-help {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .sectors-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .carbon-badge {
+                right: 15px;
+                bottom: 15px;
+            }
+            
+            .ai-assistant {
+                left: 15px;
+                bottom: 15px;
+            }
+            
+            .ai-chat {
+                left: 15px;
+                bottom: 85px;
+                width: calc(100% - 30px);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .login-container {
+                padding: 0 10px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Página de Login (inicialmente visível) -->
+    <div id="login-page" class="login-container">
+        <header class="login-header">
+            <div class="logo">
+                <i class="fas fa-leaf"></i>
+                <h1 class="login-title">EcoOffice</h1>
+            </div>
+            <p>Sistema de Gestão Sustentável</p>
+        </header>
+
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-user-shield"></i> Acesso Restrito</h2>
+            
+            <div id="auth-section">
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" placeholder="seu@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" placeholder="••••••••">
+                </div>
+                
+                <button class="btn btn-primary" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Entrar
+                </button>
+                <button class="btn btn-secondary" id="signupBtn">
+                    <i class="fas fa-user-plus"></i> Criar Conta
+                </button>
+                
+                <div id="auth-status" class="status"></div>
+            </div>
+
+            <div id="user-section" style="display: none;">
+                <div class="status success" id="welcome-message"></div>
+                <button class="btn btn-primary" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
+            </div>
+        </div>
+
+        <!-- Painel Admin Opcional -->
+        <div class="toggle-admin">
+            <button class="toggle-btn" id="toggleAdminBtn">
+                <i class="fas fa-cog"></i> Opções Administrativas
+            </button>
+        </div>
+
+        <div class="admin-panel" id="adminPanel">
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-cogs"></i> Gerenciamento</h2>
+                <p style="text-align: center; margin-bottom: 20px; color: var(--text-light);">
+                    Área restrita para administradores
+                </p>
+                
+                <div class="form-group">
+                    <label for="adminEmail">E-mail Administrativo</label>
+                    <input type="email" id="adminEmail" placeholder="admin@empresa.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="adminPass">Senha</label>
+                    <input type="password" id="adminPass" placeholder="••••••••">
+                </div>
+                
+                <button class="btn btn-primary" id="verifyAdminBtn">
+                    <i class="fas fa-check-circle"></i> Verificar Acesso
+                </button>
+                
+                <div id="admin-status" class="status"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard (inicialmente oculto) -->
+    <div id="dashboard-page" class="dashboard-container" style="display: none;">
+        <header class="dashboard-header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-leaf"></i>
+                    <h1>EcoOffice AI</h1>
+                </div>
+                <div class="user-menu">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="dashboard">
+            <div class="main-content">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Segurança do Sistema</div>
+                        <i class="fas fa-shield-alt" style="color: var(--primary);"></i>
+                    </div>
+                    <div class="security-status">
+                        <div class="status-item">
+                            <i class="fas fa-bolt status-good"></i>
+                            <span>Proteção contra surtos: <strong>Ativa</strong></span>
+                        </div>
+                        <div class="status-item">
+                            <i class="fas fa-plug status-good"></i>
+                            <span>Isolamento galvânico: <strong>Presente</strong></span>
+                        </div>
+                        <div class="status-item">
+                            <i class="fas fa-database status-good"></i>
+                            <span>Backup local: <strong>Ativo</strong></span>
+                        </div>
+                        <div class="status-item">
+                            <i class="fas fa-user-shield status-good"></i>
+                            <span>Autenticação: <strong>HTTPS/TLS</strong></span>
+                        </div>
+                    </div>
+                    <div class="certification-badge">
+                        <i class="fas fa-certificate"></i> Sistema compatível com normas INMETRO
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Consumo de Energia</div>
+                        <div class="tabs">
+                            <div class="tab active" onclick="changeTab('day')">Hoje</div>
+                            <div class="tab" onclick="changeTab('week')">Semana</div>
+                            <div class="tab" onclick="changeTab('month')">Mês</div>
+                        </div>
+                    </div>
+                    <div class="consumption-value" id="currentConsumption">15.8 kWh</div>
+                    <div class="consumption-trend trend-down">
+                        <i class="fas fa-arrow-down"></i>
+                        <span>8% menor que ontem</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="energyChart"></canvas>
+                    </div>
+                    
+                    <div class="prediction-card">
+                        <div class="prediction-header">
+                            <div class="prediction-title">Previsão IA</div>
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="prediction-value" id="consumptionPrediction">18.2 kWh</div>
+                        <div class="prediction-description" id="predictionDescription">
+                            Previsão de consumo para amanhã com base nos padrões atuais
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Setores</div>
+                        <div>
+                            <button class="btn btn-secondary" onclick="openSectorModal()">
+                                <i class="fas fa-plus"></i> Adicionar
+                            </button>
+                            <button class="btn btn-secondary" onclick="openCalibrationModal()" style="margin-left: 10px;">
+                                <i class="fas fa-tools"></i> Calibrar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="ai-recommendation" id="aiRecommendation">
+                        <h3><i class="fas fa-lightbulb"></i> Recomendação IA</h3>
+                        <p id="recommendationText">Analisando padrões de consumo para otimizações...</p>
+                    </div>
+                    
+                    <div class="sectors-grid" id="sectorsGrid">
+                        <!-- Setores serão carregados dinamicamente -->
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Resiliência do Sistema</div>
+                        <i class="fas fa-hard-drive" style="color: var(--primary);"></i>
+                    </div>
+                    <div style="padding: 15px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span>Armazenamento local:</span>
+                            <strong>12.5 kB disponíveis</strong>
+                        </div>
+                        <div class="backup-status">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Última sincronização: <strong id="lastSync">2 minutos atrás</strong></span>
+                        </div>
+                        <div class="backup-status">
+                            <i class="fas fa-battery-three-quarters"></i>
+                            <span>Backup de energia: <strong>8h restantes</strong></span>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <button class="btn btn-secondary" style="width: 100%;" onclick="forceSync()">
+                                <i class="fas fa-sync"></i> Forçar Sincronização
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Automações</div>
+                    </div>
+                    
+                    <div class="energy-saving">
+                        <h3>Modo Economia Ativo</h3>
+                        <p>Economizando aproximadamente R$ 215/mês</p>
+                    </div>
+                    
+                    <div class="automation-card">
+                        <div class="automation-header">
+                            <div class="automation-title">Desligar quando vazio</div>
+                            <label class="switch">
+                                <input type="checkbox" id="autoOff" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="automation-description">
+                            Desliga automaticamente os equipamentos quando os ambientes estão vazios.
+                        </div>
+                    </div>
+                    
+                    <div class="automation-card">
+                        <div class="automation-header">
+                            <div class="automation-title">Otimizar horário de pico</div>
+                            <label class="switch">
+                                <input type="checkbox" id="peakOptimization" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="automation-description">
+                            Reduz o consumo durante os períodos de tarifa mais cara.
+                        </div>
+                    </div>
+                    
+                    <div class="automation-card">
+                        <div class="automation-header">
+                            <div class="automation-title">Integração com energia solar</div>
+                            <label class="switch">
+                                <input type="checkbox" id="solarIntegration">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="automation-description">
+                            Prioriza o uso de energia renovável quando disponível.
+                        </div>
+                    </div>
+                    
+                    <div class="automation-card">
+                        <div class="automation-header">
+                            <div class="automation-title">Otimização por IA</div>
+                            <label class="switch">
+                                <input type="checkbox" id="aiOptimization" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="automation-description">
+                            Permite que a IA tome decisões automáticas para economia.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Gestão de Acessos</div>
+                        <i class="fas fa-users-cog" style="color: var(--primary);"></i>
+                    </div>
+                    <div style="padding: 15px;">
+                        <div style="margin-bottom: 15px;">
+                            <div style="font-weight: 500; margin-bottom: 5px;">Nível de Acesso Atual:</div>
+                            <div style="background-color: #E3F2FD; padding: 8px; border-radius: 6px;">
+                                <i class="fas fa-user-shield"></i> <strong>Administrador</strong>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <button class="btn btn-secondary" style="width: 100%;" onclick="openUserManagement()">
+                                <i class="fas fa-user-plus"></i> Gerenciar Usuários
+                            </button>
+                        </div>
+                        
+                        <div style="font-size: 0.8rem; color: var(--gray);">
+                            <i class="fas fa-info-circle"></i> Você pode criar usuários com diferentes níveis de permissão.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Alertas</div>
+                    </div>
+                    <div id="alertsList">
+                        <!-- Alertas serão carregados dinamicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="carbon-badge" onclick="openCarbonModal()">
+            <i class="fas fa-leaf carbon-icon"></i>
+            <div class="carbon-content">
+                <div class="carbon-label">Redução de CO₂</div>
+                <div class="carbon-value" id="carbonBadgeValue">128 kg</div>
+            </div>
+        </div>
+        
+        <div class="ai-assistant" onclick="toggleChat()">
+            <i class="fas fa-robot"></i>
+        </div>
+        
+        <div class="ai-chat" id="aiChat">
+            <div class="chat-header">
+                <div class="chat-title"><i class="fas fa-robot"></i> Assistente EcoAI</div>
+                <button class="close-chat" onclick="toggleChat()">&times;</button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="message ai">
+                    <div class="message-content">
+                        Olá! Sou o assistente de IA do EcoOffice. Como posso ajudar você hoje?
+                    </div>
+                    <div class="message-time">Agora</div>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Digite sua mensagem..." onkeypress="handleChatInput(event)">
+                <button class="send-button" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+        
+        <!-- Modal de Calibração -->
+        <div class="modal" id="calibrationModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title"><i class="fas fa-tools"></i> Calibrar Sensores</div>
+                    <button class="close-modal" onclick="closeModal('calibrationModal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">Sensor para Calibrar</label>
+                        <select id="sensorToCalibrate" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                            <option value="main">Sensor Principal (Quadro de Luz)</option>
+                            <option value="office">Escritório Principal</option>
+                            <option value="meeting">Sala de Reuniões</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">Fator de Correção</label>
+                        <input type="number" id="calibrationFactor" step="0.01" value="1.00" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                        <div class="calibration-help">
+                            <i class="fas fa-info-circle"></i> Ajuste este valor até a leitura bater com um medidor confiável
+                        </div>
+                    </div>
+                    
+                    <div style="background-color: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span>Leitura Atual:</span>
+                            <strong id="currentReading">0.00 W</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Leitura Ajustada:</span>
+                            <strong id="adjustedReading">0.00 W</strong>
+                        </div>
+                    </div>
+                    
+                    <div style="background-color: #FFF8E1; padding: 15px; border-radius: 8px;">
+                        <h3 style="color: var(--warning); margin-bottom: 10px;"><i class="fas fa-exclamation-triangle"></i> Importante</h3>
+                        <p style="font-size: 0.9rem;">
+                            Para calibrar corretamente, conecte uma carga conhecida (ex.: lâmpada de 100W) e ajuste o fator até o valor medido corresponder ao esperado.
+                        </p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="testCalibration()">
+                        <i class="fas fa-bolt"></i> Testar com Carga
+                    </button>
+                    <button class="btn btn-primary" onclick="saveCalibration()">
+                        <i class="fas fa-save"></i> Salvar Calibração
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal de Gestão de Usuários -->
+        <div class="modal" id="userModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title"><i class="fas fa-users-cog"></i> Gerenciar Usuários</div>
+                    <button class="close-modal" onclick="closeModal('userModal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="tab-container">
+                        <div class="tabs">
+                            <div class="tab active" onclick="changeUserTab('list')">Usuários</div>
+                            <div class="tab" onclick="changeUserTab('permissions')">Permissões</div>
+                        </div>
+                        
+                        <div class="tab-content active" id="userListTab">
+                            <div style="margin-bottom: 15px;">
+                                <button class="btn btn-secondary" style="width: 100%;" onclick="openNewUserForm()">
+                                    <i class="fas fa-user-plus"></i> Novo Usuário
+                                </button>
+                            </div>
+                            
+                            <div style="border: 1px solid #eee; border-radius: 8px; overflow: hidden;">
+                                <div style="display: grid; grid-template-columns: 1fr 100px 80px; background-color: #f5f5f5; padding: 10px 15px; font-weight: 500;">
+                                    <div>Nome</div>
+                                    <div>Tipo</div>
+                                    <div>Ações</div>
+                                </div>
+                                
+                                <div id="usersList">
+                                    <div style="display: grid; grid-template-columns: 1fr 100px 80px; padding: 10px 15px; border-bottom: 1px solid #eee;">
+                                        <div>João Silva</div>
+                                        <div>Admin</div>
+                                        <div><i class="fas fa-edit" style="cursor: pointer;"></i></div>
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: 1fr 100px 80px; padding: 10px 15px; border-bottom: 1px solid #eee;">
+                                        <div>Maria Souza</div>
+                                        <div>Operador</div>
+                                        <div><i class="fas fa-edit" style="cursor: pointer;"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="userPermissionsTab">
+                            <div style="margin-bottom: 15px;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 500;">Nível de Permissão</label>
+                                <select style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                                    <option>Administrador</option>
+                                    <option>Operador</option>
+                                    <option>Visualizador</option>
+                                </select>
+                            </div>
+                            
+                            <div style="margin-top: 20px;">
+                                <h4 style="margin-bottom: 10px;">Permissões Detalhadas</h4>
+                                <div style="display: grid; gap: 10px;">
+                                    <label style="display: flex; align-items: center; gap: 8px;">
+                                        <input type="checkbox" checked>
+                                        <span>Editar configurações do sistema</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px;">
+                                        <input type="checkbox" checked>
+                                        <span>Adicionar/remover dispositivos</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px;">
+                                        <input type="checkbox" checked>
+                                        <span>Visualizar dados de consumo</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px;">
+                                        <input type="checkbox">
+                                        <span>Gerenciar outros usuários</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeModal('userModal')">Cancelar</button>
+                    <button class="btn btn-primary" onclick="saveUserSettings()">Salvar</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal de Gerenciamento de Setores -->
+        <div class="modal" id="sectorModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Gerenciar Setor</div>
+                    <button class="close-modal" onclick="closeModal('sectorModal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="tab-container">
+                        <div class="tabs">
+                            <div class="tab active" onclick="changeSectorTab('info')">Informações</div>
+                            <div class="tab" onclick="changeSectorTab('devices')">Dispositivos</div>
+                            <div class="tab" onclick="changeSectorTab('automation')">Automação</div>
+                        </div>
+                        
+                        <div class="tab-content active" id="infoTab">
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 500;">Nome do Setor</label>
+                                <input type="text" id="sectorName" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: 500;">Área (m²)</label>
+                                <input type="number" id="sectorArea" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 5px; font-weight: 500;">Descrição</label>
+                                <textarea id="sectorDescription" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; min-height: 80px;"></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="devicesTab">
+                            <div style="margin-bottom: 15px;">
+                                <button class="btn btn-secondary" style="width: 100%;" onclick="openDeviceModal()">
+                                    <i class="fas fa-plus"></i> Adicionar Dispositivo
+                                </button>
+                            </div>
+                            <div id="devicesList">
+                                <!-- Dispositivos serão carregados dinamicamente -->
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="automationTab">
+                            <div class="automation-card">
+                                <div class="automation-header">
+                                    <div class="automation-title">Desligar quando vazio</div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="sectorAutoOff" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="automation-description">
+                                    Desliga automaticamente os equipamentos quando este setor está vazio.
+                                </div>
+                            </div>
+                            
+                            <div class="automation-card">
+                                <div class="automation-header">
+                                    <div class="automation-title">Horário programado</div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="sectorSchedule">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="automation-description">
+                                    Define horários específicos para ligar/desligar equipamentos.
+                                </div>
+                                <div id="scheduleSettings" style="margin-top: 10px; display: none;">
+                                    <!-- Configurações de horário -->
+                                </div>
+                            </div>
+                            
+                            <div class="automation-card">
+                                <div class="automation-header">
+                                    <div class="automation-title">Otimização por IA</div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="sectorAIOptimization" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="automation-description">
+                                    Permite que a IA ajuste automaticamente este setor para máxima eficiência.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeModal('sectorModal')">Cancelar</button>
+                    <button class="btn btn-primary" onclick="saveSector()">Salvar</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal de Impacto Ambiental -->
+        <div class="modal" id="carbonModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Impacto Ambiental</div>
+                    <button class="close-modal" onclick="closeModal('carbonModal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <i class="fas fa-leaf" style="font-size: 3rem; color: var(--success); margin-bottom: 15px;"></i>
+                        <h2 style="color: var(--success); margin-bottom: 10px;">128 kg de CO₂ reduzidos</h2>
+                        <p style="color: var(--gray);">Equivalente a 3 árvores adultas preservadas</p>
+                    </div>
+                    
+                    <div style="background-color: #f5f5f5; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span>Consumo este mês</span>
+                            <span style="font-weight: 500;">425 kWh</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span>Redução em relação ao mês passado</span>
+                            <span style="font-weight: 500; color: var(--success);">↓ 15%</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Economia financeira</span>
+                            <span style="font-weight: 500;">R$ 215,00</span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="margin-bottom: 10px;">Conquistas</h3>
+                        <div style="display: flex; gap: 10px;">
+                            <div style="background-color: #E8F5E9; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-medal" style="color: var(--success); font-size: 1.5rem;"></i>
+                            </div>
+                            <div style="background-color: #E8F5E9; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-tree" style="color: var(--success); font-size: 1.5rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" style="width: 100%;" onclick="shareResults()">
+                        <i class="fas fa-share"></i> Compartilhar Resultados
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal de Dispositivo -->
+        <div class="modal" id="deviceModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Adicionar Dispositivo</div>
+                    <button class="close-modal" onclick="closeModal('deviceModal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">Tipo de Dispositivo</label>
+                        <select id="deviceType" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                            <option value="light">Lâmpada</option>
+                            <option value="ac">Ar-Condicionado</option>
+                            <option value="computer">Computador</option>
+                            <option value="printer">Impressora</option>
+                            <option value="other">Outro</option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">Nome do Dispositivo</label>
+                        <input type="text" id="deviceName" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">Potência (Watts)</label>
+                        <input type="number" id="devicePower" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">Horário de Uso</label>
+                        <select id="deviceUsage" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                            <option value="constant">Uso constante</option>
+                            <option value="daytime">Apenas durante o dia</option>
+                            <option value="occasional">Uso ocasional</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeModal('deviceModal')">Cancelar</button>
+                    <button class="btn btn-primary" onclick="saveDevice()">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAEtMdBbvS_sUqXhFkulyXR5Qi2leLghh0",
+            authDomain: "ecooffice-d08a0.firebaseapp.com",
+            projectId: "ecooffice-d08a0",
+            storageBucket: "ecooffice-d08a0.appspot.com",
+            messagingSenderId: "646763677872",
+            appId: "1:646763677872:web:5ac1f4cdc3990892469375",
+            measurementId: "G-9QUEWQiQ27"
+        };
+
+        // Inicialização
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Elementos da página de login
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const authStatus = document.getElementById('auth-status');
+        const authSection = document.getElementById('auth-section');
+        const userSection = document.getElementById('user-section');
+        const welcomeMessage = document.getElementById('welcome-message');
+        const toggleAdminBtn = document.getElementById('toggleAdminBtn');
+        const adminPanel = document.getElementById('adminPanel');
+        const adminEmailInput = document.getElementById('adminEmail');
+        const adminPassInput = document.getElementById('adminPass');
+        const verifyAdminBtn = document.getElementById('verifyAdminBtn');
+        const adminStatus = document.getElementById('admin-status');
+        const loginBtn = document.getElementById('loginBtn');
+        const signupBtn = document.getElementById('signupBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // Elementos do dashboard
+        const loginPage = document.getElementById('login-page');
+        const dashboardPage = document.getElementById('dashboard-page');
+        const dashboardLogoutBtn = document.querySelector('.user-avatar');
+
+        // Lista de administradores permitidos
+        const ADMIN_USERS = ["admin@ecooffice.com", "gestor@ecooffice.com"];
+
+        // Dados iniciais do dashboard
+        const sectorsData = [
+            {
+                id: 1,
+                name: "Escritório Principal",
+                status: "active",
+                devices: 8,
+                consumption: "7.2 kWh",
+                devicesList: [
+                    { name: "Lâmpada LED 1", type: "light", power: "15W", status: true },
+                    { name: "Ar-Condicionado", type: "ac", power: "1800W", status: false },
+                    { name: "Computador 1", type: "computer", power: "300W", status: true }
+                ]
+            },
+            {
+                id: 2,
+                name: "Sala de Reuniões",
+                status: "warning",
+                devices: 5,
+                consumption: "3.5 kWh",
+                devicesList: [
+                    { name: "Projetor", type: "other", power: "250W", status: true },
+                    { name: "Lâmpada LED 2", type: "light", power: "15W", status: true }
+                ]
+            },
+            {
+                id: 3,
+                name: "Copa",
+                status: "inactive",
+                devices: 3,
+                consumption: "1.8 kWh",
+                devicesList: [
+                    { name: "Geladeira", type: "other", power: "150W", status: true },
+                    { name: "Microondas", type: "other", power: "1200W", status: false }
+                ]
+            }
+        ];
+
+        const alertsData = [
+            {
+                type: "warning",
+                title: "Consumo elevado no Escritório Principal",
+                message: "O consumo está 25% acima da média para este horário",
+                time: "10:45 AM"
+            },
+            {
+                type: "success",
+                title: "Economia detectada",
+                message: "Seu consumo hoje está 12% menor que ontem",
+                time: "9:30 AM"
+            },
+            {
+                type: "danger",
+                title: "Dispositivo inativo há 48h",
+                message: "O ar-condicionado na Sala de Reuniões está ligado sem uso",
+                time: "Ontem, 6:20 PM"
+            }
+        ];
+
+        // Inicialização do gráfico
+        let energyChart;
+        
+        function initializeChart() {
+            const ctx = document.getElementById('energyChart').getContext('2d');
+            
+            energyChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00'],
+                    datasets: [{
+                        label: 'Consumo de Energia (kWh)',
+                        data: [2.1, 1.8, 1.5, 3.2, 4.5, 3.8, 2.9, 2.3],
+                        borderColor: '#00695C',
+                        backgroundColor: 'rgba(0, 105, 92, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'kWh'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Funções para manipulação de tabs
+        function changeTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Simular mudança de dados
+            const consumptionValue = document.getElementById('currentConsumption');
+            const predictionValue = document.getElementById('consumptionPrediction');
+            const predictionDesc = document.getElementById('predictionDescription');
+            
+            if (tab === 'day') {
+                consumptionValue.textContent = '15.8 kWh';
+                predictionValue.textContent = '18.2 kWh';
+                predictionDesc.textContent = 'Previsão de consumo para amanhã com base nos padrões atuais';
+                
+                // Atualizar gráfico
+                energyChart.data.labels = ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00'];
+                energyChart.data.datasets[0].data = [2.1, 1.8, 1.5, 3.2, 4.5, 3.8, 2.9, 2.3];
+                energyChart.update();
+            } else if (tab === 'week') {
+                consumptionValue.textContent = '112.4 kWh';
+                predictionValue.textContent = '125-130 kWh';
+                predictionDesc.textContent = 'Previsão para próxima semana com base no histórico';
+                
+                energyChart.data.labels = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+                energyChart.data.datasets[0].data = [18.2, 17.5, 16.8, 19.1, 20.3, 15.2, 15.3];
+                energyChart.update();
+            } else if (tab === 'month') {
+                consumptionValue.textContent = '425 kWh';
+                predictionValue.textContent = '390-410 kWh';
+                predictionDesc.textContent = 'Previsão para próximo mês considerando sazonalidade';
+                
+                energyChart.data.labels = ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'];
+                energyChart.data.datasets[0].data = [112.4, 108.2, 98.7, 105.7];
+                energyChart.update();
+            }
+        }
+
+        // Funções para setores
+        function loadSectors() {
+            const sectorsGrid = document.getElementById('sectorsGrid');
+            sectorsGrid.innerHTML = '';
+            
+            sectorsData.forEach(sector => {
+                const sectorCard = document.createElement('div');
+                sectorCard.className = 'sector-card';
+                
+                let statusClass = '';
+                if (sector.status === 'warning') statusClass = 'warning';
+                else if (sector.status === 'inactive') statusClass = 'inactive';
+                
+                sectorCard.innerHTML = `
+                    <div class="sector-header">
+                        <div class="sector-name">${sector.name}</div>
+                        <div class="sensor-status ${statusClass}"></div>
+                    </div>
+                    <div class="sector-meta">
+                        ${sector.devices} dispositivos | ${sector.consumption}
+                    </div>
+                    <div class="device-list">
+                        ${sector.devicesList.slice(0, 3).map(device => `
+                            <div class="device-item">
+                                <div class="device-info">
+                                    <div class="device-icon">
+                                        ${getDeviceIcon(device.type)}
+                                    </div>
+                                    <div>${device.name}</div>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" ${device.status ? 'checked' : ''}>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        `).join('')}
+                        ${sector.devicesList.length > 3 ? `<div style="text-align: center; margin-top: 10px; color: var(--secondary); cursor: pointer;" onclick="viewSectorDetails(${sector.id})">+${sector.devicesList.length - 3} mais</div>` : ''}
+                    </div>
+                `;
+                
+                sectorsGrid.appendChild(sectorCard);
+            });
+            
+            // Simular recomendação de IA
+            setTimeout(() => {
+                const recommendationText = document.getElementById('recommendationText');
+                recommendationText.innerHTML = `Recomendação: Desligar ar-condicionados não utilizados no Escritório Principal pode economizar até <strong>2.1 kWh/dia</strong>. <a href="#" style="color: var(--secondary);">Ver detalhes</a>`;
+                
+                // Adicionar classe de anomalia se necessário
+                document.querySelectorAll('.sector-card').forEach((card, index) => {
+                    if (sectorsData[index].status === 'warning') {
+                        card.classList.add('anomaly-detected');
+                    }
+                });
+            }, 1500);
+        }
+        
+        function getDeviceIcon(type) {
+            switch(type) {
+                case 'light': return '<i class="fas fa-lightbulb"></i>';
+                case 'ac': return '<i class="fas fa-snowflake"></i>';
+                case 'computer': return '<i class="fas fa-laptop"></i>';
+                case 'printer': return '<i class="fas fa-print"></i>';
+                default: return '<i class="fas fa-plug"></i>';
+            }
+        }
+        
+        function viewSectorDetails(id) {
+            const sector = sectorsData.find(s => s.id === id);
+            if (!sector) return;
+            
+            // Preencher modal com dados do setor
+            document.getElementById('sectorName').value = sector.name;
+            document.getElementById('sectorArea').value = Math.floor(Math.random() * 50) + 20;
+            document.getElementById('sectorDescription').value = `Setor ${sector.name} com ${sector.devices} dispositivos`;
+            
+            // Carregar dispositivos
+            const devicesList = document.getElementById('devicesList');
+            devicesList.innerHTML = sector.devicesList.map(device => `
+                <div class="device-item">
+                    <div class="device-info">
+                        <div class="device-icon">
+                            ${getDeviceIcon(device.type)}
+                        </div>
+                        <div>${device.name}</div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <span style="font-size: 0.8rem; color: var(--gray);">${device.power}</span>
+                        <label class="switch">
+                            <input type="checkbox" ${device.status ? 'checked' : ''}>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            `).join('');
+            
+            openModal('sectorModal');
+        }
+
+        // Funções para alertas
+        function loadAlerts() {
+            const alertsList = document.getElementById('alertsList');
+            alertsList.innerHTML = '';
+            
+            alertsData.forEach(alert => {
+                const alertItem = document.createElement('div');
+                alertItem.className = 'alert-item';
+                
+                alertItem.innerHTML = `
+                    <div class="alert-icon ${alert.type}">
+                        <i class="fas ${alert.type === 'warning' ? 'fa-exclamation-triangle' : alert.type === 'danger' ? 'fa-times-circle' : 'fa-check-circle'}"></i>
+                    </div>
+                    <div class="alert-content">
+                        <div class="alert-title">${alert.title}</div>
+                        <div class="alert-message">${alert.message}</div>
+                    </div>
+                    <div class="alert-time">${alert.time}</div>
+                `;
+                
+                alertsList.appendChild(alertItem);
+            });
+        }
+
+        // Funções para modais
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        function openSectorModal() {
+            // Limpar campos para novo setor
+            document.getElementById('sectorName').value = '';
+            document.getElementById('sectorArea').value = '';
+            document.getElementById('sectorDescription').value = '';
+            document.getElementById('devicesList').innerHTML = '';
+            
+            openModal('sectorModal');
+        }
+        
+        function openDeviceModal() {
+            document.getElementById('deviceName').value = '';
+            document.getElementById('devicePower').value = '';
+            document.getElementById('deviceType').value = 'light';
+            document.getElementById('deviceUsage').value = 'constant';
+            
+            openModal('deviceModal');
+        }
+        
+        function openCarbonModal() {
+            openModal('carbonModal');
+        }
+        
+        function changeSectorTab(tab) {
+            document.querySelectorAll('#sectorModal .tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.querySelectorAll('#sectorModal .tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(tab + 'Tab').classList.add('active');
+        }
+
+        // Funções para salvar dados
+        function saveSector() {
+            const name = document.getElementById('sectorName').value;
+            if (!name) {
+                alert('Por favor, insira um nome para o setor');
+                return;
+            }
+            
+            // Simular salvamento
+            alert(`Setor "${name}" salvo com sucesso!`);
+            closeModal('sectorModal');
+            
+            // Recarregar setores (simulação)
+            if (!sectorsData.some(s => s.name === name)) {
+                const newId = Math.max(...sectorsData.map(s => s.id)) + 1;
+                sectorsData.push({
+                    id: newId,
+                    name: name,
+                    status: 'active',
+                    devices: 0,
+                    consumption: '0 kWh',
+                    devicesList: []
+                });
+                
+                loadSectors();
+            }
+        }
+        
+        function saveDevice() {
+            const name = document.getElementById('deviceName').value;
+            const type = document.getElementById('deviceType').value;
+            const power = document.getElementById('devicePower').value;
+            
+            if (!name || !power) {
+                alert('Por favor, preencha todos os campos obrigatórios');
+                return;
+            }
+            
+            // Simular salvamento
+            alert(`Dispositivo "${name}" adicionado com sucesso!`);
+            closeModal('deviceModal');
+        }
+        
+        function shareResults() {
+            alert('Resultados compartilhados com sucesso!');
+            closeModal('carbonModal');
+        }
+
+        // Funções para o chat de IA
+        function toggleChat() {
+            const chat = document.getElementById('aiChat');
+            chat.classList.toggle('active');
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            // Adicionar mensagem do usuário
+            addMessage(message, 'user');
+            input.value = '';
+            
+            // Simular resposta da IA
+            setTimeout(() => {
+                const response = generateAIResponse(message);
+                addMessage(response, 'ai');
+            }, 1000);
+        }
+        
+        function handleChatInput(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        }
+        
+        function addMessage(text, sender) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const now = new Date();
+            const timeString = now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            messageDiv.innerHTML = `
+                <div class="message-content">${text}</div>
+                <div class="message-time">${timeString}</div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        // Sistema de IA para respostas inteligentes
+        function generateAIResponse(message) {
+            const lowerMsg = message.toLowerCase();
+            
+            // Análise de sentimento básica
+            const positiveWords = ['bom', 'ótimo', 'excelente', 'obrigado', 'thanks', 'ok'];
+            const negativeWords = ['ruim', 'péssimo', 'horrível', 'problema', 'erro'];
+            
+            const isPositive = positiveWords.some(word => lowerMsg.includes(word));
+            const isNegative = negativeWords.some(word => lowerMsg.includes(word));
+            
+            // Padrões de perguntas
+            if (lowerMsg.includes('consumo') || lowerMsg.includes('gasto')) {
+                return "Analisando os dados atuais, seu consumo de energia está 12% menor que no mês passado. O setor com maior consumo é o Escritório Principal, principalmente devido ao ar-condicionado.";
+            } else if (lowerMsg.includes('economizar') || lowerMsg.includes('reduzir')) {
+                return "Recomendo desligar os ar-condicionados em salas vazias e ativar o modo de economia de energia nos computadores após 18h. Isso pode reduzir seu consumo em até 20%.";
+            } else if (lowerMsg.includes('alerta') || lowerMsg.includes('problema')) {
+                return "Há um alerta ativo sobre consumo elevado no Escritório Principal. Verifique se todos os dispositivos estão sendo utilizados de forma eficiente.";
+            } else if (lowerMsg.includes('recomendação') || lowerMsg.includes('sugestão')) {
+                return "Baseado nos padrões de uso, sugiro programar o desligamento automático das luzes às 19h e reduzir a temperatura do ar-condicionado em 1 grau, economizando aproximadamente 5% de energia.";
+            } else if (lowerMsg.includes('impacto') || lowerMsg.includes('ambiental')) {
+                return "Sua redução de 128kg de CO₂ equivale a 3 árvores adultas preservadas. Continue com as boas práticas!";
+            } else if (isPositive) {
+                return "Fico feliz em ajudar! Se precisar de mais informações sobre seu consumo de energia, é só perguntar.";
+            } else if (isNegative) {
+                return "Lamento saber que está com problemas. Posso ajudar a analisar os dados e sugerir soluções para melhorar a eficiência energética.";
+            } else {
+                const defaultResponses = [
+                    "Como posso ajudar você com a gestão energética do seu escritório hoje?",
+                    "Posso analisar os dados de consumo e fornecer recomendações personalizadas. Sobre qual setor gostaria de informações?",
+                    "Estou aqui para ajudar a tornar seu escritório mais eficiente energeticamente. O que gostaria de saber?",
+                    "Com base nos dados atuais, identifico oportunidades de economia de energia. Posso detalhar essas informações se desejar."
+                ];
+                return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+            }
+        }
+
+        // Simular análise de IA em tempo real
+        function simulateAIAnalysis() {
+            setInterval(() => {
+                // Simular mudança nos dados
+                const randomSector = Math.floor(Math.random() * sectorsData.length);
+                const randomStatus = ['active', 'warning', 'inactive'][Math.floor(Math.random() * 3)];
+                
+                if (sectorsData[randomSector].status !== randomStatus) {
+                    sectorsData[randomSector].status = randomStatus;
+                    loadSectors();
+                    
+                    // Adicionar alerta se necessário
+                    if (randomStatus === 'warning') {
+                        const alert = {
+                            type: "warning",
+                            title: `Atividade incomum detectada em ${sectorsData[randomSector].name}`,
+                            message: "O sistema identificou padrões de consumo fora do normal",
+                            time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                        };
+                        
+                        alertsData.unshift(alert);
+                        loadAlerts();
+                    }
+                }
+                
+                // Atualizar recomendação de IA periodicamente
+                const recommendations = [
+                    "Sugiro verificar o ar-condicionado na Sala de Reuniões, que está consumindo 35% acima da média para este horário.",
+                    "Analisando os dados, recomendo substituir 2 lâmpadas antigas no Escritório Principal por modelos LED, economizando ~R$45/mês.",
+                    "Seu horário de pico está entre 14h-16h. Ativar a otimização para este período pode reduzir custos em 12%.",
+                    "Identifiquei que 3 computadores permanecem ligados após o horário comercial. Desligá-los pode economizar 1.8 kWh/dia."
+                ];
+                
+                document.getElementById('recommendationText').innerHTML = `Recomendação IA: ${recommendations[Math.floor(Math.random() * recommendations.length)]} <a href="#" style="color: var(--secondary);">Ver detalhes</a>`;
+                
+            }, 30000); // A cada 30 segundos
+        }
+
+        // ===== NOVAS FUNÇÕES ADICIONADAS =====
+        
+        function openCalibrationModal() {
+            document.getElementById('calibrationFactor').value = '1.00';
+            document.getElementById('currentReading').textContent = '0.00 W';
+            document.getElementById('adjustedReading').textContent = '0.00 W';
+            openModal('calibrationModal');
+        }
+        
+        function testCalibration() {
+            // Simular teste com carga de 100W
+            document.getElementById('currentReading').textContent = '95.0 W';
+            const factor = parseFloat(document.getElementById('calibrationFactor').value);
+            document.getElementById('adjustedReading').textContent = (95.0 * factor).toFixed(1) + ' W';
+        }
+        
+        function saveCalibration() {
+            const sensor = document.getElementById('sensorToCalibrate').value;
+            const factor = document.getElementById('calibrationFactor').value;
+            alert(`Calibração para ${sensor} salva com fator ${factor}`);
+            closeModal('calibrationModal');
+        }
+        
+        function openUserManagement() {
+            openModal('userModal');
+        }
+        
+        function changeUserTab(tab) {
+            document.querySelectorAll('#userModal .tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.querySelectorAll('#userModal .tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById('user' + tab.charAt(0).toUpperCase() + tab.slice(1) + 'Tab').classList.add('active');
+        }
+        
+        function openNewUserForm() {
+            alert('Abrir formulário para novo usuário');
+        }
+        
+        function saveUserSettings() {
+            alert('Configurações de usuário salvas');
+            closeModal('userModal');
+        }
+        
+        function forceSync() {
+            document.getElementById('lastSync').textContent = 'agora';
+            alert('Dados sincronizados com sucesso!');
+        }
+
+        // Funções de Autenticação
+        async function loginUser() {
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            
+            if (!validateEmail(email)) {
+                showAuthStatus("Por favor, insira um e-mail válido", "error");
+                return;
+            }
+            
+            try {
+                showAuthStatus("Autenticando...", "");
+                await auth.signInWithEmailAndPassword(email, password);
+                
+                // Esconder página de login e mostrar dashboard
+                loginPage.style.display = 'none';
+                dashboardPage.style.display = 'block';
+                
+                // Inicializar dashboard
+                initializeDashboard();
+                
+            } catch (error) {
+                handleAuthError(error);
+            }
+        }
+
+        async function signupUser() {
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            
+            if (!validateEmail(email)) {
+                showAuthStatus("Por favor, insira um e-mail válido", "error");
+                return;
+            }
+            
+            if (password.length < 6) {
+                showAuthStatus("A senha deve ter pelo menos 6 caracteres", "error");
+                return;
+            }
+            
+            try {
+                showAuthStatus("Criando conta...", "");
+                await auth.createUserWithEmailAndPassword(email, password);
+                
+                // Cadastro adicional seguro
+                await db.collection("users").doc(auth.currentUser.uid).set({
+                    email: email,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    isAdmin: ADMIN_USERS.includes(email)
+                });
+                
+                // Mostra mensagem temporária de sucesso
+                showAuthStatus("Cadastro realizado com sucesso!", "temporary");
+                
+                // Limpa os campos
+                emailInput.value = '';
+                passwordInput.value = '';
+                
+            } catch (error) {
+                handleAuthError(error);
+            }
+        }
+
+        async function logoutUser() {
+            try {
+                await auth.signOut();
+                // Esconder dashboard e mostrar página de login
+                dashboardPage.style.display = 'none';
+                loginPage.style.display = 'block';
+            } catch (error) {
+                showAuthStatus("Erro ao sair: " + error.message, "error");
+            }
+        }
+
+        // Verificação de Admin
+        async function verifyAdmin() {
+            const email = adminEmailInput.value;
+            const password = adminPassInput.value;
+            
+            try {
+                showAdminStatus("Verificando...", "");
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const userDoc = await db.collection("users").doc(userCredential.user.uid).get();
+                
+                if (userDoc.exists && userDoc.data().isAdmin) {
+                    showAdminStatus("Acesso administrativo concedido", "success");
+                    loadAdminFeatures();
+                } else {
+                    await auth.signOut();
+                    showAdminStatus("Acesso negado: credenciais inválidas", "error");
+                }
+            } catch (error) {
+                showAdminStatus("Erro: " + error.message, "error");
+            }
+        }
+
+        function loadAdminFeatures() {
+            // Funções administrativas seriam carregadas aqui
+        }
+
+        // Helpers
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function showAuthStatus(message, type) {
+            authStatus.textContent = message;
+            authStatus.className = type ? `status ${type}` : "status";
+        }
+
+        function showAdminStatus(message, type) {
+            adminStatus.textContent = message;
+            adminStatus.className = type ? `status ${type}` : "status";
+        }
+
+        function handleAuthError(error) {
+            let message = error.message;
+            
+            if (error.code === "auth/invalid-email") {
+                message = "E-mail inválido";
+            } else if (error.code === "auth/user-not-found") {
+                message = "Usuário não encontrado";
+            } else if (error.code === "auth/wrong-password") {
+                message = "Senha incorreta";
+            } else if (error.code === "auth/email-already-in-use") {
+                message = "E-mail já está em uso";
+            } else if (error.code === "auth/weak-password") {
+                message = "Senha muito fraca (mínimo 6 caracteres)";
+            }
+            
+            showAuthStatus(message, "error");
+        }
+
+        // Inicialização do dashboard
+        function initializeDashboard() {
+            initializeChart();
+            loadSectors();
+            loadAlerts();
+            simulateAIAnalysis();
+            
+            // Configurar eventos
+            document.getElementById('autoOff').addEventListener('change', function() {
+                alert(`Desligamento automático ${this.checked ? 'ativado' : 'desativado'}`);
+            });
+            
+            document.getElementById('peakOptimization').addEventListener('change', function() {
+                alert(`Otimização de horário de pico ${this.checked ? 'ativada' : 'desativada'}`);
+            });
+            
+            document.getElementById('solarIntegration').addEventListener('change', function() {
+                alert(`Integração com energia solar ${this.checked ? 'ativada' : 'desativada'}`);
+            });
+            
+            document.getElementById('aiOptimization').addEventListener('change', function() {
+                alert(`Otimização por IA ${this.checked ? 'ativada' : 'desativada'}`);
+            });
+            
+            // Configurar chat inicial
+            setTimeout(() => {
+                addMessage("Notei que o consumo no setor de TI aumentou 15% nesta semana. Gostaria que eu analisasse os possíveis motivos?", 'ai');
+            }, 5000);
+        }
+
+        // Event Listeners
+        loginBtn.addEventListener('click', loginUser);
+        signupBtn.addEventListener('click', signupUser);
+        logoutBtn.addEventListener('click', logoutUser);
+        dashboardLogoutBtn.addEventListener('click', logoutUser);
+        toggleAdminBtn.addEventListener('click', () => {
+            adminPanel.style.display = adminPanel.style.display === 'none' ? 'block' : 'none';
+        });
+        verifyAdminBtn.addEventListener('click', verifyAdmin);
+
+        // Monitorar estado de autenticação
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                authSection.style.display = 'none';
+                userSection.style.display = 'block';
+                welcomeMessage.textContent = `Bem-vindo, ${user.email}`;
+                
+                // Verifica se é admin
+                db.collection("users").doc(user.uid).get()
+                    .then(doc => {
+                        if (doc.exists && doc.data().isAdmin) {
+                            toggleAdminBtn.style.display = 'block';
+                        }
+                    });
+            } else {
+                authSection.style.display = 'block';
+                userSection.style.display = 'none';
+                adminPanel.style.display = 'none';
+                toggleAdminBtn.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
